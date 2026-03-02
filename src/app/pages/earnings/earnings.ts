@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ExpenditureService } from '../../services/expenditure';
 import { TrafficUnreservedService } from '../../services/traffic-unreserved';
-
+import { TrafficReservedService } from '../../services/traffic-reserved';
 @Component({
   selector: 'app-earnings',
   standalone: true,
@@ -38,10 +38,16 @@ export class Earnings implements OnInit {
   unreservedList: any[] = [];
   unreservedEditId: string | null = null;
 
+  // RESERVED
+reservedForm!: FormGroup;
+reservedList: any[] = [];
+reservedEditId: string | null = null;
+
   constructor(
     private fb: FormBuilder,
     private service: ExpenditureService,
-    private unreservedService: TrafficUnreservedService
+    private unreservedService: TrafficUnreservedService,
+    private reservedService: TrafficReservedService
   ) {}
 
   ngOnInit() {
@@ -67,6 +73,16 @@ export class Earnings implements OnInit {
     // Load Data
     this.loadExpenditure();
     this.loadUnreserved();
+
+    this.reservedForm = this.fb.group({
+    avgTransactionsPerDay: [''],
+    avgEarningsPerDay: [''],
+    year: [''],
+    totalTransactions: [''],
+    totalEarnings: ['']
+  });
+
+  this.loadReserved();
   }
 
   // =====================================
@@ -147,4 +163,57 @@ export class Earnings implements OnInit {
     this.unreservedService.delete(id)
       .subscribe(() => this.loadUnreserved());
   }
+  // RESERVED METHODS
+
+loadReserved() {
+  this.reservedService.getAll()
+    .subscribe(data => this.reservedList = data);
+}
+
+saveReserved() {
+  if (this.reservedForm.invalid) return;
+
+  const payload = {
+    avgTransactionsPerDay: this.reservedForm.value.avgTransactionsPerDay,
+    avgEarningsPerDay: this.reservedForm.value.avgEarningsPerDay,
+    yearlyData: [
+      {
+        year: this.reservedForm.value.year,
+        totalTransactions: this.reservedForm.value.totalTransactions,
+        totalEarnings: this.reservedForm.value.totalEarnings
+      }
+    ]
+  };
+
+  if (this.reservedEditId) {
+    this.reservedService.update(this.reservedEditId, payload)
+      .subscribe(() => {
+        this.loadReserved();
+        this.reservedForm.reset();
+        this.reservedEditId = null;
+      });
+  } else {
+    this.reservedService.create(payload)
+      .subscribe(() => {
+        this.loadReserved();
+        this.reservedForm.reset();
+      });
+  }
+}
+
+editReserved(item: any) {
+  this.reservedForm.patchValue({
+    avgTransactionsPerDay: item.avgTransactionsPerDay,
+    avgEarningsPerDay: item.avgEarningsPerDay,
+    year: item.yearlyData?.[0]?.year,
+    totalTransactions: item.yearlyData?.[0]?.totalTransactions,
+    totalEarnings: item.yearlyData?.[0]?.totalEarnings
+  });
+  this.reservedEditId = item._id;
+}
+
+deleteReserved(id: string) {
+  this.reservedService.delete(id)
+    .subscribe(() => this.loadReserved());
+}
 }

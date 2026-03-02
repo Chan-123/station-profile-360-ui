@@ -116,4 +116,47 @@
     </tr>
   </tbody>
 </table>
+
+<hr>
+<h3>RESERVED TICKET DETAILS</h3>
+
+<form [formGroup]="reservedForm" (ngSubmit)="saveReserved()">
+
+  <input formControlName="avgTransactionsPerDay" placeholder="Avg Transactions Per Day">
+  <input formControlName="avgEarningsPerDay" placeholder="Avg Earnings Per Day">
+  <input formControlName="year" placeholder="Year (e.g., 2024-25)">
+  <input formControlName="totalTransactions" placeholder="Total Transactions">
+  <input formControlName="totalEarnings" placeholder="Total Earnings">
+
+  <button type="submit">
+    {{ reservedEditId ? 'Update' : 'Save' }}
+  </button>
+
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>Avg Transactions</th>
+      <th>Avg Earnings</th>
+      <th>Year</th>
+      <th>Total Transactions</th>
+      <th>Total Earnings</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of reservedList">
+      <td>{{ item.avgTransactionsPerDay }}</td>
+      <td>{{ item.avgEarningsPerDay }}</td>
+      <td>{{ item.yearlyData[0]?.year }}</td>
+      <td>{{ item.yearlyData[0]?.totalTransactions }}</td>
+      <td>{{ item.yearlyData[0]?.totalEarnings }}</td>
+      <td>
+        <button (click)="editReserved(item)">Edit</button>
+        <button (click)="deleteReserved(item._id)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
 </div>
