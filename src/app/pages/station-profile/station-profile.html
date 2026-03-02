@@ -1,0 +1,221 @@
+<mat-card class="station-card">
+  <h2>🚉 Station Profile</h2>
+
+  <form [formGroup]="stationForm" (ngSubmit)="onSubmit()">
+
+    <!-- BASIC DETAILS -->
+    <h3>Basic Information</h3>
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Station Name</mat-label>
+        <input matInput formControlName="stationName">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Station Code</mat-label>
+        <input matInput formControlName="stationCode">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="category">
+          <mat-option value="NSG-1">NSG-1</mat-option>
+          <mat-option value="NSG-2">NSG-2</mat-option>
+          <mat-option value="SG-1">SG-1</mat-option>
+          <mat-option value="SG-2">SG-2</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>No. of Platforms</mat-label>
+        <input matInput type="number" formControlName="platforms">
+      </mat-form-field>
+    </div>
+
+    <!-- FOOTFALL -->
+    <h3>Footfall & Earnings</h3>
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Suburban Footfall</mat-label>
+        <input matInput type="number" formControlName="suburbanFootfall">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Non-Suburban Footfall</mat-label>
+        <input matInput type="number" formControlName="nonSuburbanFootfall">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Daily Earnings (₹)</mat-label>
+        <input matInput type="number" formControlName="dailyEarnings">
+      </mat-form-field>
+    </div>
+
+    <!-- AMENITIES -->
+    <h3>Passenger Amenities</h3>
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>AC Waiting Hall</mat-label>
+        <mat-select formControlName="acWaitingHall">
+          <mat-option value="Yes">Yes</mat-option>
+          <mat-option value="No">No</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Executive Lounge</mat-label>
+        <mat-select formControlName="executiveLounge">
+          <mat-option value="Yes">Yes</mat-option>
+          <mat-option value="No">No</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Cloak Room</mat-label>
+        <mat-select formControlName="cloakRoom">
+          <mat-option value="Yes">Yes</mat-option>
+          <mat-option value="No">No</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Parking Available</mat-label>
+        <mat-select formControlName="parkingAvailable">
+          <mat-option value="Yes">Yes</mat-option>
+          <mat-option value="No">No</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <h3>🍽️ Catering Contracts</h3>
+
+<div formArrayName="cateringContracts">
+  <div
+    *ngFor="let catering of cateringContracts.controls; let i = index"
+    [formGroupName]="i"
+    class="contract-box"
+  >
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Stall No</mat-label>
+        <input matInput formControlName="stallNo">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Location</mat-label>
+        <input matInput formControlName="location">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Licensee</mat-label>
+        <input matInput formControlName="licensee">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Annual License Fee</mat-label>
+        <input matInput type="number" formControlName="annualFee">
+      </mat-form-field>
+      <div class="status-box"
+     [ngStyle]="{ color: getContractStatus(catering.value.endDate).color }">
+      Status:
+      {{ getContractStatus(catering.value.endDate).status }}
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button mat-button color="warn" type="button" (click)="removeCatering(i)">
+        ❌ Remove
+      </button>
+    </div>
+    <mat-form-field appearance="outline">
+  <mat-label>Start Date</mat-label>
+  <input matInput [matDatepicker]="picker1" formControlName="startDate">
+  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+  <mat-datepicker #picker1></mat-datepicker>
+</mat-form-field>
+
+<mat-form-field appearance="outline">
+  <mat-label>End Date</mat-label>
+  <input matInput [matDatepicker]="picker2" formControlName="endDate">
+  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+  <mat-datepicker #picker2></mat-datepicker>
+</mat-form-field>
+  </div>
+</div>
+
+<button mat-raised-button color="accent" type="button" (click)="addCatering()">
+  ➕ Add Catering Contract
+</button>
+
+<h3>🚗 Parking Contracts</h3>
+
+<div formArrayName="parkingContracts">
+  <div
+    *ngFor="let parking of parkingContracts.controls; let i = index"
+    [formGroupName]="i"
+    class="contract-box"
+  >
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type">
+          <mat-option value="2W">2 Wheeler</mat-option>
+          <mat-option value="Car">Car Parking</mat-option>
+          <mat-option value="Premium">Premium Parking</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Area (Sq.m)</mat-label>
+        <input matInput type="number" formControlName="area">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Licensee</mat-label>
+        <input matInput formControlName="licensee">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Annual License Fee</mat-label>
+        <input matInput type="number" formControlName="annualFee">
+      </mat-form-field>
+    </div>
+    <div class="status-box"
+     [ngStyle]="{ color: getContractStatus(parking.value.endDate).color }">
+      Status:
+      {{ getContractStatus(parking.value.endDate).status }}
+    </div>
+
+    <div class="button-row">
+      <button mat-button color="warn" type="button" (click)="removeParking(i)">
+        ❌ Remove
+      </button>
+    </div>
+    <mat-form-field appearance="outline">
+  <mat-label>Start Date</mat-label>
+  <input matInput [matDatepicker]="picker1" formControlName="startDate">
+  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+  <mat-datepicker #picker1></mat-datepicker>
+</mat-form-field>
+
+<mat-form-field appearance="outline">
+  <mat-label>End Date</mat-label>
+  <input matInput [matDatepicker]="picker2" formControlName="endDate">
+  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+  <mat-datepicker #picker2></mat-datepicker>
+</mat-form-field>
+  </div>
+</div>
+
+<button mat-raised-button color="accent" type="button" (click)="addParking()">
+  ➕ Add Parking Contract
+</button>
+
+    <div class="button-row">
+      <button mat-raised-button color="primary" type="submit">
+        💾 Save Station Profile
+      </button>
+    </div>
+
+  </form>
+</mat-card>

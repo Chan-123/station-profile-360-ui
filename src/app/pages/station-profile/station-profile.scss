@@ -1,0 +1,43 @@
+.station-card {
+  padding: 30px;
+  border-radius: 16px;
+  margin: 20px;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+h3 {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: #1e3a8a;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+mat-form-field {
+  flex: 1;
+  min-width: 220px;
+}
+
+.button-row {
+  margin-top: 30px;
+}
+
+.contract-box {
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  background: #f9fafb;
+}
+
+.status-box {
+  margin-top: 10px;
+  font-weight: 600;
+}

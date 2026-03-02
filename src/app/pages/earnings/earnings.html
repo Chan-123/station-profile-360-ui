@@ -1,0 +1,119 @@
+<div class="container">
+  <h2>💰 Station Earnings Dashboard - MAS</h2>
+
+  <div class="cards">
+
+    <div class="card">
+      <h3>🎟 Unreserved Tickets</h3>
+      <p>Avg Per Day: ₹ {{ earningsData.unreserved.avgPerDay | number }}</p>
+      <p>Total (2024-25): ₹ {{ earningsData.unreserved.total2024 | number }}</p>
+    </div>
+
+    <div class="card">
+      <h3>🧾 Reserved Tickets</h3>
+      <p>Avg Per Day: ₹ {{ earningsData.reserved.avgPerDay | number }}</p>
+      <p>Total (2024-25): ₹ {{ earningsData.reserved.total2024 | number }}</p>
+    </div>
+
+    <div class="card">
+      <h3>📦 Parcel & Luggage</h3>
+      <p>Avg Per Day: ₹ {{ earningsData.parcel.avgPerDay | number }}</p>
+      <p>Total (2024-25): ₹ {{ earningsData.parcel.total2024 | number }}</p>
+    </div>
+
+    <div class="card">
+      <h3>🚨 Ticket Checking</h3>
+      <p>Avg Per Day: ₹ {{ earningsData.ticketChecking.avgPerDay | number }}</p>
+      <p>Total (2024-25): ₹ {{ earningsData.ticketChecking.total2024 | number }}</p>
+    </div>
+
+    <div class="card">
+      <h3>🛏 Retiring Room</h3>
+      <p>Total (2024-25): ₹ {{ earningsData.retiringRoom.total2024 | number }}</p>
+    </div>
+
+  </div>
+  <hr>
+<h2>💸 Expenditure Contracts</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <input formControlName="contractHead" placeholder="Contract Head">
+  <input formControlName="licenseeName" placeholder="Licensee Name">
+  <input formControlName="term" placeholder="Term">
+  <input formControlName="fromDate" type="date">
+  <input formControlName="toDate" type="date">
+  <input formControlName="contractValue" type="number" placeholder="Contract Value">
+  <input formControlName="remarks" placeholder="Remarks">
+
+  <button type="submit">
+    {{ editId ? 'Update' : 'Save' }}
+  </button>
+</form>
+
+<hr>
+
+<table>
+  <tr>
+    <th>Head</th>
+    <th>Licensee</th>
+    <th>Term</th>
+    <th>From</th>
+    <th>To</th>
+    <th>Value</th>
+    <th>Remarks</th>
+    <th>Actions</th>
+  </tr>
+
+  <tr *ngFor="let item of list">
+    <td>{{ item.contractHead }}</td>
+    <td>{{ item.licenseeName }}</td>
+    <td>{{ item.term }}</td>
+    <td>{{ item.fromDate | date }}</td>
+    <td>{{ item.toDate | date }}</td>
+    <td>{{ item.contractValue }}</td>
+    <td>{{ item.remarks }}</td>
+    <td>
+      <button (click)="edit(item)">Edit</button>
+      <button (click)="delete(item._id)">Delete</button>
+    </td>
+  </tr>
+</table>
+<hr>
+<h2>🚦 TRAFFIC & EARNINGS DETAILS</h2>
+
+<h3>UN-RESERVED TICKET DETAILS</h3>
+
+<form [formGroup]="unreservedForm" (ngSubmit)="saveUnreserved()">
+
+  <input formControlName="avgTicketsPerDay" placeholder="Avg Tickets Per Day">
+  <input formControlName="avgPassengersPerDay" placeholder="Avg Passengers Per Day">
+  <input formControlName="avgEarningsPerDay" placeholder="Avg Earnings Per Day">
+
+  <button type="submit">
+    {{ unreservedEditId ? 'Update' : 'Save' }}
+  </button>
+
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>Avg Tickets</th>
+      <th>Avg Passengers</th>
+      <th>Avg Earnings</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of unreservedList">
+      <td>{{ item.avgTicketsPerDay }}</td>
+      <td>{{ item.avgPassengersPerDay }}</td>
+      <td>{{ item.avgEarningsPerDay }}</td>
+      <td>
+        <button (click)="editUnreserved(item)">Edit</button>
+        <button (click)="deleteUnreserved(item._id)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>

@@ -1,0 +1,60 @@
+<h2>📑 Commercial Contracts</h2>
+
+<div class="filter-row">
+  <mat-form-field appearance="outline">
+    <mat-label>Search</mat-label>
+    <input matInput [(ngModel)]="searchText" (input)="applyFilter()">
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="exportToExcel()">
+    ⬇ Export to Excel
+  </button>
+</div>
+
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+  <ng-container matColumnDef="type">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+    <td mat-cell *matCellDef="let element">{{ element.type }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="licensee">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Licensee</th>
+    <td mat-cell *matCellDef="let element">{{ element.licenseeName }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="location">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Location</th>
+    <td mat-cell *matCellDef="let element">{{ element.location }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="endDate">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>End Date</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.endDate | date }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef>Status</th>
+    <td mat-cell *matCellDef="let element"
+        [ngStyle]="{ color: getStatus(element.endDate).color }">
+      {{ getStatus(element.endDate).status }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="annualFee">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      Annual Fee (₹)
+    </th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.annualFee | number }}
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+</table>
+
+<mat-paginator [pageSize]="5"></mat-paginator>
