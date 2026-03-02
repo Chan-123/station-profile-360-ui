@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ExpenditureService } from '../../services/expenditure';
 import { TrafficUnreservedService } from '../../services/traffic-unreserved';
 import { TrafficReservedService } from '../../services/traffic-reserved';
+import { TrafficTicketCheckingService } from '../../services/traffic-ticket-checking';
 @Component({
   selector: 'app-earnings',
   standalone: true,
@@ -38,16 +39,22 @@ export class Earnings implements OnInit {
   unreservedList: any[] = [];
   unreservedEditId: string | null = null;
 
-  // RESERVED
-reservedForm!: FormGroup;
-reservedList: any[] = [];
-reservedEditId: string | null = null;
+    // RESERVED
+  reservedForm!: FormGroup;
+  reservedList: any[] = [];
+  reservedEditId: string | null = null;
+
+  // TICKET CHECKING
+  ticketForm!: FormGroup;
+  ticketList: any[] = [];
+  ticketEditId: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private service: ExpenditureService,
     private unreservedService: TrafficUnreservedService,
-    private reservedService: TrafficReservedService
+    private reservedService: TrafficReservedService,
+    private ticketService: TrafficTicketCheckingService
   ) {}
 
   ngOnInit() {
@@ -83,6 +90,17 @@ reservedEditId: string | null = null;
   });
 
   this.loadReserved();
+
+    this.ticketForm = this.fb.group({
+    staffWorking: [''],
+    avgCasesPerDay: [''],
+    avgEarningsPerDay: [''],
+    year: [''],
+    totalCases: [''],
+    totalEarnings: ['']
+  });
+
+  this.loadTicketChecking();
   }
 
   // =====================================
@@ -215,5 +233,65 @@ editReserved(item: any) {
 deleteReserved(id: string) {
   this.reservedService.delete(id)
     .subscribe(() => this.loadReserved());
+}
+
+// ===============================
+// TICKET CHECKING METHODS
+// ===============================
+
+loadTicketChecking() {
+  this.ticketService.getAll()
+    .subscribe(data => this.ticketList = data);
+}
+
+saveTicketChecking() {
+
+  if (this.ticketForm.invalid) return;
+
+  const payload = {
+    staffWorking: this.ticketForm.value.staffWorking,
+    avgCasesPerDay: this.ticketForm.value.avgCasesPerDay,
+    avgEarningsPerDay: this.ticketForm.value.avgEarningsPerDay,
+    yearlyData: [
+      {
+        year: this.ticketForm.value.year,
+        totalCases: this.ticketForm.value.totalCases,
+        totalEarnings: this.ticketForm.value.totalEarnings
+      }
+    ]
+  };
+
+  if (this.ticketEditId) {
+    this.ticketService.update(this.ticketEditId, payload)
+      .subscribe(() => {
+        this.loadTicketChecking();
+        this.ticketForm.reset();
+        this.ticketEditId = null;
+      });
+  } else {
+    this.ticketService.create(payload)
+      .subscribe(() => {
+        this.loadTicketChecking();
+        this.ticketForm.reset();
+      });
+  }
+}
+
+editTicket(item: any) {
+  this.ticketForm.patchValue({
+    staffWorking: item.staffWorking,
+    avgCasesPerDay: item.avgCasesPerDay,
+    avgEarningsPerDay: item.avgEarningsPerDay,
+    year: item.yearlyData?.[0]?.year,
+    totalCases: item.yearlyData?.[0]?.totalCases,
+    totalEarnings: item.yearlyData?.[0]?.totalEarnings
+  });
+
+  this.ticketEditId = item._id;
+}
+
+deleteTicket(id: string) {
+  this.ticketService.delete(id)
+    .subscribe(() => this.loadTicketChecking());
 }
 }

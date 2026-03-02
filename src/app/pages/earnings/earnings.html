@@ -159,4 +159,49 @@
     </tr>
   </tbody>
 </table>
+<hr>
+<h3>TICKETING CHECKING DETAILS</h3>
+
+<form [formGroup]="ticketForm" (ngSubmit)="saveTicketChecking()">
+
+  <input formControlName="staffWorking" placeholder="No. of Staff Working">
+  <input formControlName="avgCasesPerDay" placeholder="Avg Cases Per Day">
+  <input formControlName="avgEarningsPerDay" placeholder="Avg Earnings Per Day">
+  <input formControlName="year" placeholder="Year (e.g., 2024-25)">
+  <input formControlName="totalCases" placeholder="Total Cases">
+  <input formControlName="totalEarnings" placeholder="Total Earnings">
+
+  <button type="submit">
+    {{ ticketEditId ? 'Update' : 'Save' }}
+  </button>
+
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>Staff</th>
+      <th>Avg Cases</th>
+      <th>Avg Earnings</th>
+      <th>Year</th>
+      <th>Total Cases</th>
+      <th>Total Earnings</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of ticketList">
+      <td>{{ item.staffWorking }}</td>
+      <td>{{ item.avgCasesPerDay }}</td>
+      <td>{{ item.avgEarningsPerDay }}</td>
+      <td>{{ item.yearlyData[0]?.year }}</td>
+      <td>{{ item.yearlyData[0]?.totalCases }}</td>
+      <td>{{ item.yearlyData[0]?.totalEarnings }}</td>
+      <td>
+        <button (click)="editTicket(item)">Edit</button>
+        <button (click)="deleteTicket(item._id)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
 </div>
